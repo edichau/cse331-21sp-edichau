@@ -4,15 +4,22 @@
 1. Why did Fibonacci fail the testThrowsIllegalArgumentException< test? What (if anything) did
 you have to do to fix it? If you did not have to change anything to fix this issue, explain why.
 
+It failed the test because 0 is not a negative number and 0 is not supposed to throw an exception, it is
+supposed to return 1. To fix this, in the first if statement, i changed the <=0 to a <0 and in the else if
+i changed the <=2 to <2
 
 
 2. Why did Fibonacci fail the testBaseCase test? What (if anything) did you have to do to fix
 it? If you did not have to change anything to fix this issue, explain why.
 
+Because the base case of n being 0 threw an exception. To fix this, in the first if statement,
+i changed the <=0 to a <0 and in the else if i changed the <=2 to <2
 
 
 3.Why did Fibonacci fail the testInductiveCase test? What (if anything) did you have to do to
 fix it? If you did not have to change anything to fix this issue, explain why.
 
-
+In the recursive steps, the expected terms weren't matching with the actual terms of the fibonacci
+sequence, to fix this i changed the getFibTerm(n - 1) - getFibTerm(n - 2) to getFibTerm(n - 1) + getFibTerm(n - 2),
+which is what the fibonacci sequence is.
 

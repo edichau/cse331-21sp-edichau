@@ -4,15 +4,73 @@
 
 1. Multiplication Pseudocode
 
+    r = p * q:
+      d_p = 0
+      d_q = 0
+      r = 0
+      {inv: r + p[d_p...] * q = p * q}
+      foreach term, t_p, in p:
+        set d_p = degree of t_p
+
+        {inv: r + p[d_p] * q[d_q...] = p[...d_p] * q}
+        foreach term, t_q, in q:
+          set d_q = degree of t_q
+          if any term, t_r, in r has the same degree as d_p + d_q,
+            then increase the t_r in r by t_p * t_q
+          else
+            insert t_p * t_q in r as a new term with degree d_p + d_q
+          set d_q = d_q + 1
+
+        set d_q = 0
+        set d_p = d_p + 1
 
 
 2. Division Pseudocode
+
+    q = u / v:
+      set q = 0
+      set r = u by making a term-by-term copy of all terms in u to r
+
+      {inv: q = (u/r)[t], t = term}
+      while r != 0 and highest degree of r >= highest degree of v:
+        set t = leading term of r / leading term of v
+        set d = highest degree of r - highest degree of v
+        set s to be a polynomial that has a term of degree d with coefficient t
+        set q += s
+        set r -= (s * v)
 
 
 
 3. Division Example: (x3+x-1) / (x+1) = x2-x+2
 
-
+    u = (x^3+x-1)
+    v = (x+1)
+    q = 0
+    r = copy of u = (x^3+x-1)
+    while r != 0 and highest degree of r >= highest degree of v
+      [r != 0 and highest degree of r (3) >= highest degree of v (1)] yes
+      Iteration 1:
+        [set t = leading term of r / leading term of v] t = 1
+        [set d = highest degree of r - highest degree of v] d = 3 - 1 = 2
+        [set s to be a polynomial that has a term of degree d with coefficient t] s = x^2
+        [set q = s + q] q = 0 + x^2 = x^2
+        [set r = r - (s * v)] r = x^3+x-1 - (x^2 * (x+1)) = x^3+x-1 - (x^3+x^2) = -x^2+x-1
+      [r != 0 and highest degree of r (2) >= highest degree of v (1)] yes
+      Iteration 2:
+        [set t = leading term of r / leading term of v] t = -1
+        [set d = highest degree of r - highest degree of v] d = 2 - 1 = 1
+        [set s to be a polynomial that has a term of degree d with coefficient t] s = -x
+        [set q = s + q] q = x^2 + (-x) = x^2-x
+        [set r = r - (s * v)] r = -x^2+x-1 - (-x * (x+1)) = -x^2+x+1 - (-x^2-x) = 2*x-1
+      [r != 0 and highest degree of r (1) >= highest degree of v (1)] yes
+      Iteration 3:
+        [set t = leading term of r / leading term of v] t = 2
+        [set d = highest degree of r - highest degree of v] d = 1 - 1 = 0
+        [set s to be a polynomial that has a term of degree d with coefficient t] s = 2
+        [set q = s + q] q = x^2-x + 2 = x^2-x+2
+        [set r = r - (s * v)] r = 2*x-1 - (2 * x+1) = 2*x-1 - (2*x+2) = -3
+      [r != 0 and highest degree of r (0) >= highest degree of v (1)] no
+    we are done: q = x^2-x+2
 
 
 ## Part 1
@@ -20,14 +78,29 @@
 
 1. Weakened Rep Invariant
 
+    Constructors that use both params can remove gcd, since numer and denom
+    dont have to be stored reduced form. toString needs to be changed to use
+    gcd in its method to print the correct thing. equals and hashCode
+    also need to use gcd inside to return the correct value. this makes the
+    methods changed less efficient due to adding gcd but the constructor more
+    efficient due to removing gcd.
 
 
 2. Alternate add, sub, mul, div
+
+    It would fail to meet the spec since the class specs say that RatNum
+    is immutable, and the implementation of this.numer = numerExpr and
+    this.denom = denomExpr would change the RatNum. The spec of add, sub,
+    mul, and div also don't say in the spec they would modify the RatNum.
 
 
 
 3. Constructor checkReps
 
+    Having one checkRep at the end of the constructor is enough since there
+    is no method that can change the RatNum, and anything done on RatNum
+    returns a new RatNum without modification of the original. Because of this,
+    checkRep only needs to be done at the end of the constructor.
 
 
 
@@ -36,18 +109,31 @@
 
 1. Calls to checkRep in RatTerm
 
+    I had checkRep only at the end of constructors, because i never changed
+    the RatNum with any of my methods, i would instead create new RatNums to
+    return. Since i never modified the original RatNum, i would only have to
+    checkRep at the end of the constructor.
 
 
 2. Weakened Rep Invariant
 
+    isZero would change, since the exponent might not be 0 to be able to see if it is zero,
+    you would have to compare the exp as well which is more complex.
+    RatTerm have to also change the check if the coeff is 0, by comparing the exp.
+    toString would add a check of isZero before checking e == 1 and then
+    append 0 to output if isZero is true, which is more complex since it needs
+    another condition check.
 
 
 3. Alternate Rep Invariant
 
-
+    The constructor needs to be changed so that when passing in a NaN and any
+    exponent, the result should be NaN instead of NaN*x^expt.
 
 4. Preferred Invariants
 
+    I think both are good since they reduce the number of possible errors in the future,
+    since things like NaN*x^2 or 0*x^2 cant exist.
 
 
 
@@ -56,6 +142,8 @@
 
 1. Calls to checkRep in RatPoly
 
+    I had checkRep anytime a new RatPoly was created, including the constructor,
+    to make sure i was building the RotPoly correctly.
 
 
 2. Alternate Representation

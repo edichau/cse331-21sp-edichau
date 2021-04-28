@@ -1,0 +1,8 @@
+# Tests that 2 nodes can be created
+
+# Create a graph
+CreateGraph graph1
+
+# Add a pair of nodes
+AddNode graph1 n1
+AddNode graph1 n2

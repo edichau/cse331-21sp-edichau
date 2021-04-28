@@ -1,0 +1,9 @@
+# Tests that 3 nodes can be added
+
+# Create a graph
+Created graph graph1
+
+# Add a pair of nodes
+added node n1 to graph1
+added node n2 to graph1
+added node n3 to graph1

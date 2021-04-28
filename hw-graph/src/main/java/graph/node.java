@@ -7,10 +7,10 @@ package graph;
 public class node {
     /**
      * Creates a node with a name.
-     *
-     * @effect Creates a node with a name.
+     * @param name of the node
+     * @spec.effects Creates a node with a name.
      */
-    public node(String name){
+    public void node(String name){
 
     }
 
@@ -20,7 +20,7 @@ public class node {
      * @return name of node.
      */
     public String getName(){
-
+        throw new RuntimeException("not yet implemented");
     }
 
 }

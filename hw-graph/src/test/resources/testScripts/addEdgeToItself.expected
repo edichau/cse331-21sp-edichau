@@ -1,0 +1,10 @@
+#test if you can add an edge from one node to itself
+
+# Create a graph
+created graph graph1
+
+# Add a pair of nodes
+added node n1 to graph1
+
+# Add an edge
+added edge e1 from n1 to n1 in graph1

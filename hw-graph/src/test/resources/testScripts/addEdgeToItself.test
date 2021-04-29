@@ -1,0 +1,10 @@
+#test if you can add an edge from one node to itself
+
+# Create a graph
+CreateGraph graph1
+
+# Add a pair of nodes
+AddNode graph1 n1
+
+# Add an edge
+AddEdge graph1 n1 n1 e1

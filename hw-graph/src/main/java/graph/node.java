@@ -10,7 +10,7 @@ public class node {
      * @param name of the node
      * @spec.effects Creates a node with a name.
      */
-    public void node(String name){
+    public node(String name){
 
     }
 

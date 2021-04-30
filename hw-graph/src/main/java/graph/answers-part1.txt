@@ -9,27 +9,31 @@
 
     Abstraction Function:
 
-
+    Queue<Integer> where
+    the queue is empty if no elements are in entries and the queue =
+    entries = [a1, a2, ..., a_k] where k is elements in entries
 
     Representation Invariant:
 
-
-
+    entries doesnt have a null
 
     ### IntQueue2
 
     Abstraction Function:
 
-
+    the nth element of the queue = entries[(front+n) % entries.length()]. Front is where
+    the front of the queue.
 
     Representation Invariant:
 
-
-
+    entries.get(i) != null, and for any index i, 0 <= i < entries.length
 
 2. Group the snapshots of IntQueue2's internal state into groups that have the same abstract state.
 
-
+    a, d, g
+    b, h
+    c, f
+    e
 
 
 3. For each signature below, state and justify in 1-2 sentences (per part) whether the method or constructor
@@ -37,27 +41,36 @@ could possibly expose the representation, given the information available. Expla
 
     a. `public int solveEquations(int x, int y, int z)`
 
-
+    This doesn't expose the representation since this method
+    only takes and returns primitive data types and doesnt work with objects.
 
     b. `public String[] decode(boolean slowly)`
 
-
+    This could have potential representation exposure since the return type is
+    String[] and arrays are mutable.
 
     c. `private Date myBirthday()`
 
+    If Date is mutable and the returned Date is not a copy of the original
+    Date, and is instead the original Date, then this method contains
+    representation exposure.
 
 
     d. `public String toString()`
 
-
+    This doesn't contain potential representation exposure since the return
+    type String is immutable.
 
     e. `public Iterator<Integer> elements()`
 
-
+    If the returned Iterator references the original collection and supports
+    a remove method, this method contains representation exposure since the
+    client can remove an Integer in the collection while iterating through it.
 
     f. `public Deck(List<Card> cards)`
 
-
+    If the method doesn't make a copy of the argument cards, then this method contains
+    representation exposure since the client can change cards.
 
 
 ## Section 2
@@ -68,6 +81,11 @@ interface to a graph. If your design includes multiple classes or interfaces, ex
 included each one; if not, explain whether you considered additional classes and why you decided
 not to include them.
 
+Insert and remove for both the edges and the nodes were necessary for building the graph in the
+first place and methods like list nodes and list edges are for seeing the graph and what data
+it already carries. List children and findShortestPath are for the client to be able to get information
+from the graph. The different classes of node and edge were to separate out the object of node and edge,
+it just seemed like the correct thing to do.
 
 
 
@@ -77,5 +95,8 @@ not to include them.
 What was your testing strategy for this assignment? How do your script tests and JUnit tests
 differ from each other (if they do), and why?
 
-
+My testing strategy was to test everything all the edge cases i could think of, like the nulls
+or the others, as well as just the basic see if my methods worked. I used the 0, 1, 2 method in the
+hints to come up with the script tests. The JUnit tests differ from my script tests as my script tests
+are very basic and the script tests test things that i use in the JUnit tests.
 

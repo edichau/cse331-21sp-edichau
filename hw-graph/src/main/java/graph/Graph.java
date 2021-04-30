@@ -68,6 +68,13 @@ public class Graph {
     }
 
     /**
+     * list all edges in the graph
+     * @return list of edges in the graph
+     */
+    public ArrayList<edge> listEdges(){
+        throw new RuntimeException("not yet implemented");
+    }
+    /**
      * list all children of a node
      * @param n node being removed
      * @spec.requires n != null
@@ -77,13 +84,13 @@ public class Graph {
         throw new RuntimeException("not yet implemented");
     }
     /**
-     * finds all possible paths between two nodes
+     * finds the shortest path between two nodes
      * @param n1 start node
      * @param n2 end node
      * @spec.requires n1 != null and n2 != null
-     * @return list containing all paths
+     * @return list containing the shortest path
      */
-    public ArrayList<ArrayList<edge>> findPath(node n1, node n2){
+    public ArrayList<edge> findShortestPath(node n1, node n2){
         throw new RuntimeException("not yet implemented");
     }
 

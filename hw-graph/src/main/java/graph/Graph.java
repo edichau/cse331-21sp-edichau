@@ -1,6 +1,7 @@
 package graph;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /** Graph represents a mutable directed labeled graph.
  *
@@ -10,7 +11,71 @@ import java.util.ArrayList;
  */
 
 public class Graph {
+    HashMap<node, ArrayList<edge>> graph = new HashMap<>();
 
+    public static class node {
+        String name;
+        /**
+         * Creates a node with a name.
+         * @param name of the node
+         * @spec.effects Creates a node with a name.
+         */
+        public node(String name){
+            this.name = name;
+        }
+
+        /**
+         * Returns name of node
+         *
+         * @return returns name of the node
+         */
+        public String getName(){
+            return name;
+        }
+
+        @Override
+        public boolean equals(node n){
+            if (n.getName().equals(this.name)){
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    public static class edge {
+        /**
+         * Creates an edge that connects the 2 nodes with a label.
+         * @param n1 first node of the edge
+         * @param n2 last node of the edge
+         * @param label label for the edge
+         * @spec.requires n1 != null and n2 != null and label != null
+         * @spec.effects Creates an edge that connects the 2 nodes with a label.
+         */
+        public edge (node n1, node n2, String label){
+
+        }
+        /**
+         * Gets starting node of the edge
+         * @return the starting node
+         */
+        public node getStart(){
+            throw new RuntimeException("not yet implemented");
+        }
+        /**
+         * Gets end node of the edge
+         * @return the ending node
+         */
+        public node getEnd(){
+            throw new RuntimeException("not yet implemented");
+        }
+        /**
+         * Gets label of the edge
+         * @return the label of the edge
+         */
+        public String getLabel(){
+            throw new RuntimeException("not yet implemented");
+        }
+    }
     /**
      * Creates an empty graph with no nodes or edges.
      *

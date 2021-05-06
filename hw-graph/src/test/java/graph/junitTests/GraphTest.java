@@ -1,8 +1,7 @@
 package graph.junitTests;
 
-import graph.node;
-import graph.edge;
 import graph.Graph;
+import graph.Graph.*;
 import org.junit.*;
 
 import java.util.ArrayList;

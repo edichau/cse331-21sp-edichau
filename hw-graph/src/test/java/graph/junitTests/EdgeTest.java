@@ -1,7 +1,7 @@
 package graph.junitTests;
 
-import graph.node;
-import graph.edge;
+import graph.Graph.node;
+import graph.Graph.edge;
 import org.junit.*;
 
 import static org.junit.Assert.assertEquals;

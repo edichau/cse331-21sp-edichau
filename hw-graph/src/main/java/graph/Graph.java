@@ -49,6 +49,11 @@ public class Graph {
             }
         }
 
+        @Override
+        public int hashCode(){
+            return name.hashCode();
+        }
+
         public void checkRep() {
             assert (name != null);
         }
@@ -119,6 +124,14 @@ public class Graph {
             }
         }
 
+        @Override
+        public int hashCode(){
+            return label.hashCode()*n1.hashCode()*n2.hashCode();
+        }
+
+
+
+
         private void checkRep(){
             assert (n1 != null);
             assert (n2 != null);
@@ -178,7 +191,9 @@ public class Graph {
          * @spec.modifies the current graph instance
          */
         public void removeNode(node n) {
-
+            checkRep();
+            graph.remove(n);
+            checkRep();
         }
 
         /**
@@ -190,7 +205,11 @@ public class Graph {
          * @spec.modifies the current graph instance
          */
         public void removeEdge(edge e) {
-
+            checkRep();
+            ArrayList<edge> edges = graph.get(e.getStart());
+            edges.remove(e);
+            graph.put(e.getStart(), edges);
+            checkRep();
         }
 
         /**
@@ -199,7 +218,13 @@ public class Graph {
          * @return list of nodes in the graph
          */
         public ArrayList<node> listNodes() {
-            throw new RuntimeException("not yet implemented");
+            checkRep();
+            ArrayList<node> nodes = new ArrayList<>();
+            for (node key : graph.keySet()) {
+                nodes.add(key);
+            }
+            checkRep();
+            return nodes;
         }
 
         /**
@@ -208,7 +233,15 @@ public class Graph {
          * @return list of edges in the graph
          */
         public ArrayList<edge> listEdges() {
-            throw new RuntimeException("not yet implemented");
+            checkRep();
+            ArrayList<edge> ret = new ArrayList<>();
+            for (ArrayList<edge> edges: graph.values()) {
+                for (edge e : edges){
+                    ret.add(e);
+                }
+            }
+            checkRep();
+            return ret;
         }
 
         /**
@@ -219,20 +252,38 @@ public class Graph {
          * @spec.requires n != null
          */
         public HashMap<node, ArrayList<edge>> listChildren(node n) {
-            throw new RuntimeException("not yet implemented");
+            checkRep();
+            HashMap<node, ArrayList<edge>> ret = new HashMap<>();
+            ArrayList<edge> edges = graph.get(n);
+            for(edge e : edges){
+                ArrayList<edge> edges2 = new ArrayList<>();
+                edges2.add(e);
+                ret.put(e.getStart(), edges);
+            }
+            checkRep();
+            return ret;
         }
 
-        /**
-         * finds the shortest path between two nodes
-         *
-         * @param n1 start node
-         * @param n2 end node
-         * @return list containing the shortest path
-         * @spec.requires n1 != null and n2 != null
-         */
-        public ArrayList<edge> findShortestPath(node n1, node n2) {
-            throw new RuntimeException("not yet implemented");
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Graph))
+            return false;
+        Graph g = (Graph) o;
+        if (g.listNodes().equals(this.listNodes()) && g.listEdges().equals(this.listEdges())) {
+            return true;
+        } else {
+            return false;
         }
+    }
+
+    @Override
+    public int hashCode(){
+            int hashcode = 0;
+            for (node n : graph.keySet()){
+                hashcode += n.hashCode();
+            }
+        return hashcode;
+    }
 
         private void checkRep(){
             assert (graph != null);

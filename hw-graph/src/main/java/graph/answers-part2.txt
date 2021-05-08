@@ -16,12 +16,22 @@ A few examples of possible Graph representations:
 representations listed above (for example, in terms of runtime complexity, space
 complexity, or ease of implementation).
 
-
+    A: A collection of edges would be the simplest, as it would be just that. A disadvantage would be that it would be difficult
+        to run operations on a collection of edges, it would be less coherent as a graph.
+    B: An adjacency list is what i went with, the advantage would be that that it is more coherent as a graph than just a collection of
+        edges, and it is still relatively simple. A downside would be that it is difficult to iterate through the edges associated
+        with each node, and is a little more complicated.
+    C: An adjacency matrix would be the most complex, as it would be a whole matrix. Being complex would make it harder to get an idea
+        of the whole graph but it would be the easiest to get specific data from.
 
 
 2. In two to three sentences, describe the representation you chose and explain why you
 chose it. If you chose to use a different representation than one of the three we described
 above, be sure to list its advantages and disadvantages, too.
+
+    I chose to do the adjacency list, it was the first one I thought of, and i thought
+    it would be easiest to implement. I also liked the way it visualized, with each
+    node being the center of the edges.
 
 
 
@@ -34,11 +44,13 @@ above, be sure to list its advantages and disadvantages, too.
 1. Describe any new tests you added and why you added them, or why you feel that your original
 tests alone are sufficient.
 
-
+    I did not add any more tests, because i thought i covered most cases with the 0,1,2 method.
+    This also covered edge cases
 
 
 2. Did you make any changes to your specifications as you were implementing your Graph? (yes/no)
 If yes, describe your changes and why you made them.
 
-
+    I changed the way listChildren worked. Instead of having it return a list of children, it would
+    return a mini graph, of the children. I thought it make more sense this way.
 

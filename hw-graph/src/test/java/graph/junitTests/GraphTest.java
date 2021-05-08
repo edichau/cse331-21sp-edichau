@@ -129,23 +129,4 @@ public class GraphTest {
         testGraph.insertNode(n1);
         assertEquals("listChildren() not listing children properly", nodes, testGraph.listChildren(n1));
     }
-
-    //Test for if findShortestPath method throws at null nodes
-    @Test(expected = IllegalArgumentException.class)
-    public void findShortestNullPath() {
-        testGraph.findShortestPath(null, null);
-    }
-
-    //Test for if findShortestPath method gets the shortest path between two nodes correctly
-    @Test
-    public void findShortestPath() {
-        testGraph.insertNode(n1);
-        testGraph.insertNode(n2);
-        testGraph.insertEdge(e1);
-        testGraph.insertEdge(e2);
-        testGraph.insertEdge(e3);
-        testGraph.insertEdge(e11);
-        edges.add(e1);
-        assertEquals("listChildren() not listing children properly", edges, testGraph.findShortestPath(n1, n2));
-    }
 }

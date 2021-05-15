@@ -162,23 +162,32 @@ public class Graph {
          */
         public void insertNode(node n) {
             checkRep();
-            graph.put(n, null);
+            if(!graph.containsKey(n)) {
+                if(n == null){
+                    throw new IllegalArgumentException();
+                }
+                this.graph.put(n, new ArrayList<>());
+            }
             checkRep();
         }
 
         /**
          * Inserts an edge into the graph
          *
-         * @param e edge being inserted
-         * @spec.requires e != null
+         * @param parent the start of the edge
+         * @param child the end of the edge
+         * @param label the name of the edge
+         * @spec.requires edge != null
          * @spec.effects inserts an edge into the graph
          * @spec.modifies the current graph instance
          */
-        public void insertEdge(edge e) {
+        public void insertEdge(node parent, node child, String label) {
             checkRep();
-            ArrayList<edge> edges = graph.get(e.getStart());
-            edges.add(e);
-            graph.put(e.getStart(), edges);
+            if (!graph.containsKey(parent) || !graph.containsKey(child)){
+                throw new IllegalArgumentException();
+            }
+            edge newEdge = new edge(parent, child, label);
+            graph.get(parent).add(newEdge);
             checkRep();
         }
 
@@ -192,6 +201,8 @@ public class Graph {
          */
         public void removeNode(node n) {
             checkRep();
+            if (n == null)
+                throw new IllegalArgumentException();
             graph.remove(n);
             checkRep();
         }
@@ -199,16 +210,22 @@ public class Graph {
         /**
          * Removes an edge from the graph
          *
-         * @param e edge being removed
+         * @param parent the start of the edge
+         * @param child the end of the edge
+         * @param label the name of the edge
          * @spec.requires e != null
          * @spec.effects removes an edge from the graph
          * @spec.modifies the current graph instance
          */
-        public void removeEdge(edge e) {
+        public void removeEdge(node parent, node child, String label) {
             checkRep();
-            ArrayList<edge> edges = graph.get(e.getStart());
-            edges.remove(e);
-            graph.put(e.getStart(), edges);
+            if (parent == null || child == null || label == null)
+                throw new IllegalArgumentException();
+            if (!graph.containsKey(parent) || !graph.containsKey(child)){
+                throw new IllegalArgumentException();
+            }
+            edge newEdge = new edge(parent, child, label);
+            graph.get(parent).remove(newEdge);
             checkRep();
         }
 
@@ -247,21 +264,29 @@ public class Graph {
         /**
          * list all children of a node
          *
-         * @param n node being removed
+         * @param parent node being removed
          * @return a map of edges of a nodes children
          * @spec.requires n != null
          */
-        public HashMap<node, ArrayList<edge>> listChildren(node n) {
+        public HashMap<node, ArrayList<edge>> listChildren(node parent) {
             checkRep();
-            HashMap<node, ArrayList<edge>> ret = new HashMap<>();
-            ArrayList<edge> edges = graph.get(n);
-            for(edge e : edges){
-                ArrayList<edge> edges2 = new ArrayList<>();
-                edges2.add(e);
-                ret.put(e.getStart(), edges);
+            if(parent == null)
+                throw new IllegalArgumentException();
+            HashMap<node, ArrayList<edge>> children = new HashMap<>();
+            if (graph.containsKey(parent)) {
+                ArrayList<edge> edges = graph.get(parent);
+                for(edge e : edges){
+                    if(children.containsKey(e.getStart())){
+                        children.get(e.getStart()).add(e);
+                    } else {
+                        ArrayList<edge> edges2 = new ArrayList<>();
+                        edges2.add(e);
+                        children.put(e.getStart(), edges2);
+                    }
+                }
             }
             checkRep();
-            return ret;
+            return children;
         }
 
     @Override

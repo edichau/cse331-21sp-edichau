@@ -164,7 +164,7 @@ public class GraphTestDriver {
         node n1 = new node(parentName);
         node n2 = new node(childName);
         edge edge = new edge(n1, n2, edgeLabel);
-        graph.insertEdge(edge);
+        graph.insertEdge(n1, n2, edgeLabel);
         output.println("added edge " + edgeLabel + " from " + parentName + " to " + childName + " in " + graphName);
     }
 

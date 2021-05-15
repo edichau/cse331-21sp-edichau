@@ -7,6 +7,7 @@ import graph.Graph.edge;
 import org.junit.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 
@@ -17,7 +18,7 @@ public class GraphTest {
 
     public node n1 = new node("n1");
     public node n2 = new node("n2");
-    public edge e1 = new edge(n1, n2, "n1 to n2");
+    public edge e1 = new edge(n1, n2, "e1");
     public edge e11 = new edge(n1, n2, "n1 to n2 again");
     public edge e2 = new edge(n2, n1, "n2 to n1");
     public edge e3 = new edge(n1, n1, "n1 to n1");
@@ -49,8 +50,8 @@ public class GraphTest {
         testGraph.insertNode(n1);
         assertEquals("insertNode() not inserting node properly", nodes, testGraph.listNodes());
 
-        nodes.add(n1);
-        testGraph.insertNode(n1);
+        nodes.add(n2);
+        testGraph.insertNode(n2);
         assertEquals("insertNode() not inserting 2nd node properly", nodes, testGraph.listNodes());
     }
     //Test for if insertNodes method throws an exception at null
@@ -68,7 +69,7 @@ public class GraphTest {
     //Test for if insertEdge method throws an exception at null
     @Test(expected = IllegalArgumentException.class)
     public void insertNullEdgeTest() {
-        testGraph.insertEdge(null);
+        testGraph.insertEdge(null, null, null);
     }
 
     //Test if removeNodes removes nodes properly
@@ -100,9 +101,11 @@ public class GraphTest {
     //Test for if removeEdge method properly inserts edge
     @Test
     public void removeEdgeTest() {
-        testGraph.insertEdge(e1);
+        testGraph.insertNode(n1);
+        testGraph.insertNode(n2);
+        testGraph.insertEdge(n1, n2, "e1");
         edges.add(e1);
-        testGraph.removeEdge(e1);
+        testGraph.removeEdge(n1, n2, "e1");
         edges.remove(e1);
         assertEquals("removeEdge() not removing edges properly", edges, testGraph.listEdges());
     }
@@ -118,15 +121,18 @@ public class GraphTest {
     public void listChildrenTest() {
         testGraph.insertNode(n1);
         testGraph.insertNode(n2);
-        testGraph.insertEdge(e1);
-        nodes.add(n2);
-        assertEquals("listChildren() not listing children properly", nodes, testGraph.listChildren(n1));
+        testGraph.insertEdge(n1, n2, "e1");
+        HashMap<node, ArrayList<edge>> test = new HashMap<>();
+        edges.add(e1);
+        test.put(n1, edges);
+        assertEquals("listChildren() not listing children properly", test, testGraph.listChildren(n1));
     }
 
     //Test for if listChildren method gets the children nodes of a node when there are no children correctly
     @Test
     public void listChildrenNoneTest() {
         testGraph.insertNode(n1);
-        assertEquals("listChildren() not listing children properly", nodes, testGraph.listChildren(n1));
+        HashMap<node, ArrayList<edge>> test = new HashMap<>();
+        assertEquals("listChildren() not listing children properly", test, testGraph.listChildren(n1));
     }
 }

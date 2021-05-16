@@ -12,10 +12,13 @@
 package marvel;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -32,13 +35,24 @@ public class MarvelParser {
      * @spec.requires filename is a valid file in the resources/data folder.
      */
     // TODO: Replace 'void' with the type you want the parser to produce
-    public static void parseData(String filename) throws IOException {
+    public static void parseData(String filename, ArrayList<String> chars, HashMap<String, ArrayList<String>> books) throws IOException {
         List<String> lines = readLines(filename);
-
         // TODO: Complete this method
         // You'll need to:
         //  - Split each line into its individual parts
         //  - Collect the data into some convenient data structure(s) to return to the graph building code
+        for (String line: lines) {
+            String[] arrOfLine = line.split(",");
+            chars.add(arrOfLine[0]);
+            ArrayList<String> charsInBook;
+            if (!books.containsKey(arrOfLine[1])){
+                charsInBook = new ArrayList<>();
+            } else {
+                charsInBook = books.get(arrOfLine[1]);
+            }
+            charsInBook.add(arrOfLine[0]);
+            books.put(arrOfLine[1], charsInBook);
+        }
     }
 
     /**

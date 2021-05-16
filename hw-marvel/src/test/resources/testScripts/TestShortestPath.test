@@ -1,0 +1,4 @@
+# Test the shortest path of a hero on a short graph
+
+LoadGraph heroes staffSuperheroes.csv
+FindPath Ernst-the-Bicycling-Wizard Notkin-of-the-Superhuman-Beard

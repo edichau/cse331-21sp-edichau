@@ -1,0 +1,3 @@
+# Test loading a graph of with empty csv file
+
+LoadGraph heroes staffSuperheroes.csv

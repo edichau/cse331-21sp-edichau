@@ -57,6 +57,15 @@ public class Graph {
         public void checkRep() {
             assert (name != null);
         }
+
+        public int compareTo(node n) {
+            if (!(name.equals(n.getName()))) {
+                checkRep();
+                return name.compareTo(n.getName());
+            }
+            checkRep();
+            return 0;
+        }
     }
 
     public static class edge {
@@ -128,6 +137,37 @@ public class Graph {
         public int hashCode(){
             return label.hashCode()*n1.hashCode()*n2.hashCode();
         }
+
+//        /**
+//         * Compares this object with the specified object for order. Returns
+//         * a negative integer, zero, or a positive integer as this object
+//         * is less than, equal to, or greater than the specified object.
+//         *
+//         * @param e object to be compared
+//         * @return a negative integer, zero, or a positive integer as
+//         * this object is less than, equal to, or greater than
+//         * the specified object
+//         */
+//        @Override
+//        public int compareTo(edge e) {
+//            checkRep();
+//
+//            // compare label first
+//            if (!(label.equals(e.label))) {
+//                checkRep();
+//                return label.compareTo(e.label);
+//            }
+//
+//            // if label is the same as this, compare destination
+//            // using their hashcode
+//            if (!(n2.equals(e.getEnd()))) {
+//                checkRep();
+//                return this.getEnd().hashCode() - e.getEnd().hashCode();
+//            }
+//
+//            checkRep();
+//            return 0;
+//        }
 
 
 

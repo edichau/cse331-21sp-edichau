@@ -1,0 +1,5 @@
+# Test the shortest path of a hero on a short graph
+
+loaded graph heroes
+path from Ernst-the-Bicycling-Wizard to Notkin-of-the-Superhuman-Beard:
+Ernst-the-Bicycling-Wizard to Notkin-of-the-Superhuman-Beard via CSE331

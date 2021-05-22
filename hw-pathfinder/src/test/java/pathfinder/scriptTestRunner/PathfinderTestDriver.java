@@ -11,8 +11,6 @@
 
 package pathfinder.scriptTestRunner;
 
-import static marvel.MarvelPaths.buildGraph;
-import static marvel.MarvelPaths.BFS;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
@@ -27,9 +25,11 @@ import graph.Graph.edge;
 import java.io.*;
 import java.util.*;
 
-import marvel.MarvelPaths;
 import org.junit.Rule;
 import org.junit.rules.Timeout;
+import pathfinder.datastructures.Dijkstra;
+import pathfinder.datastructures.Path;
+import pathfinder.datastructures.Point;
 
 /**
  * This class implements a testing driver which reads test scripts from
@@ -47,7 +47,7 @@ public class PathfinderTestDriver {
      * String -> Graph: maps the names of graphs to the actual graph
      **/
     // TODO for the student: Uncomment and parameterize the next line correctly:
-    private final Map<String, Graph<String, String>> graphs = new HashMap<String, Graph<String, String>>();
+    private final Map<String, Graph<String, Double>> graphs = new HashMap<String, Graph<String, Double>>();
     private final PrintWriter output;
     private final BufferedReader input;
 
@@ -110,11 +110,8 @@ public class PathfinderTestDriver {
                 case "ListChildren":
                     listChildren(arguments);
                     break;
-                case "LoadGraph":
-                    buildGraph(arguments);
-                    break;
                 case "FindPath":
-                    BFS(arguments);
+                    Dijkstra(arguments);
                     break;
                 default:
                     output.println("Unrecognized command: " + command);
@@ -138,48 +135,34 @@ public class PathfinderTestDriver {
     }
 
     private void createGraph(String graphName) {
-        Graph<String, String> graph = new Graph<>();
+        Graph<String, Double> graph = new Graph<>();
 
         graphs.put(graphName, graph);
         output.println("created the graph " + graphName);
     }
 
-    private void BFS(List<String> arguments) {
+    private void Dijkstra(List<String> arguments) {
         if(arguments.size() != 3) {
             throw new CommandException("Bad arguments to FindPath: " + arguments);
         }
 
-        Graph<String, String> graph = graphs.get(arguments.get(0));
+        Graph<String, Double> graph = graphs.get(arguments.get(0));
         String start = arguments.get(1);
         String end = arguments.get(0);
-        BFS(graph, start, end);
+        Dijkstra(graph, start, end);
     }
 
-    private void BFS(Graph<String, String> graph, String start, String end) {
-        ArrayList<Graph.edge<String, String>> path = MarvelPaths.BFS(graph, start, end);
-
+    private void Dijkstra(Graph<String, Double> graph, String start, String end) {
+        Dijkstra<String> dij = new Dijkstra<>();
+        Path<node<String>> path = dij.Dij(graph, start, end);
+        double totalCost = 0;
         output.println("path from " + start + " to " + end + ":");
         assert path != null;
-        for (Graph.edge<String, String> edge : path){
-            output.println(edge.getStart() + " to " + edge.getEnd() + " via " + edge.getLabel());
+        for (Path<node<String>>.Segment edge : path){
+            output.println(edge.getStart() + " to " + edge.getEnd() + " with weight " + String.format("%.3f", edge.getCost()));
+            totalCost += edge.getCost();
         }
-    }
-
-    private void buildGraph(List<String> arguments) throws Exception {
-        if(arguments.size() != 2) {
-            throw new CommandException("Bad arguments to buildGraph: " + arguments);
-        }
-
-        String graphName = arguments.get(0);
-        String filename = arguments.get(1);
-        buildGraph(graphName, filename);
-    }
-
-    private void buildGraph(String graphName, String filename) throws Exception {
-        Graph<String, String> graph = MarvelPaths.buildGraph(filename);
-
-        graphs.put(graphName, graph);
-        output.println("loaded graph " + graphName);
+        output.println("total cost: " + String.format("%.3f", totalCost));
     }
 
     private void addNode(List<String> arguments) {
@@ -194,7 +177,7 @@ public class PathfinderTestDriver {
     }
 
     private void addNode(String graphName, String nodeName) {
-        Graph<String, String> graph = graphs.get(graphName);
+        Graph<String, Double> graph = graphs.get(graphName);
         node<String> node = new node<>(nodeName);
         graph.insertNode(node);
         output.println("added node " + nodeName +  " to " + graphName);
@@ -209,19 +192,20 @@ public class PathfinderTestDriver {
         String parentName = arguments.get(1);
         String childName = arguments.get(2);
         String edgeLabel = arguments.get(3);
+        double dnum = Double.parseDouble(edgeLabel);
 
-        addEdge(graphName, parentName, childName, edgeLabel);
+        addEdge(graphName, parentName, childName, dnum);
     }
 
     private void addEdge(String graphName, String parentName, String childName,
-                         String edgeLabel) {
+                         Double edgeLabel) {
         // TODO Insert your code here.
-        Graph<String, String> graph = graphs.get(graphName);
+        Graph<String, Double> graph = graphs.get(graphName);
         node<String> n1 = new node<>(parentName);
         node<String> n2 = new node<>(childName);
-        edge<String, String> edge = new edge<>(n1, n2, edgeLabel);
+        edge<String, Double> edge = new edge<>(n1, n2, edgeLabel);
         graph.insertEdge(n1, n2, edgeLabel);
-        output.println("added edge " + edgeLabel + " from " + parentName + " to " + childName + " in " + graphName);
+        output.println("added edge " + String.format("%.3f", edgeLabel) + " from " + parentName + " to " + childName + " in " + graphName);
     }
 
     private void listNodes(List<String> arguments) {
@@ -236,7 +220,7 @@ public class PathfinderTestDriver {
     private void listNodes(String graphName) {
         // TODO Insert your code here.
 
-        Graph<String, String> graph = graphs.get(graphName);
+        Graph<String, Double> graph = graphs.get(graphName);
         ArrayList<node<String>> nodes = graph.listNodes();
         String ret = "";
         for (node<String> n: nodes) {
@@ -258,10 +242,10 @@ public class PathfinderTestDriver {
     private void listChildren(String graphName, String parentName) {
         // TODO Insert your code here.
 
-        Graph<String, String> graph = graphs.get(graphName);
+        Graph<String, Double> graph = graphs.get(graphName);
         String ret = "";
         node<String> node = new node<>(parentName);
-        HashMap<node<String>, ArrayList<edge<String, String>>> children = graph.listChildren(node);
+        HashMap<Graph.node<String>, ArrayList<edge<String, Double>>> children = graph.listChildren(node);
         for (node<String> n: children.keySet()) {
             ret = ret + n.getName() + " ";
         }

@@ -2,6 +2,7 @@ package graph;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /** Graph represents a mutable directed labeled graph.
  *
@@ -10,19 +11,19 @@ import java.util.HashMap;
  *  *  @spec.specfield edge: point edge //edges that connect the nodes of a graph
  */
 
-public class Graph {
-    public static final boolean DEBUG = true;
+public class Graph<T extends Comparable<T>, E extends Comparable<E>> {
+    public static final boolean DEBUG = false;
 
-    public static class node {
+    public static class node<T extends Comparable<T>> {
         // name of the node
-        String name;
+        T name;
         /**
          * Creates a node with a name.
          *
          * @param name of the node
          * @spec.effects Creates a node with a name.
          */
-        public node(String name) {
+        public node(T name) {
             this.name = name;
             checkRep();
         }
@@ -32,21 +33,17 @@ public class Graph {
          *
          * @return returns name of the node
          */
-        public String getName() {
+        public T getName() {
             checkRep();
             return name;
         }
 
         @Override
         public boolean equals(Object o) {
-            if (!(o instanceof node))
+            if (!(o instanceof node<?>))
                 return false;
-            node n = (node) o;
-            if (n.getName().equals(this.name)) {
-                return true;
-            } else {
-                return false;
-            }
+            node<?> n = (node<?>) o;
+            return n.getName().equals(this.name);
         }
 
         @Override
@@ -58,7 +55,7 @@ public class Graph {
             assert (name != null);
         }
 
-        public int compareTo(node n) {
+        public int compareTo(node<T> n) {
             if (!(name.equals(n.getName()))) {
                 checkRep();
                 return name.compareTo(n.getName());
@@ -68,13 +65,13 @@ public class Graph {
         }
     }
 
-    public static class edge {
+    public static class edge<T extends Comparable<T>, E> {
         // first node
-        node n1;
+        node<T> n1;
         //second node
-        node n2;
+        node<T> n2;
         //label of edge
-        String label;
+        E label;
         /**
          * Creates an edge that connects the 2 nodes with a label.
          *
@@ -84,7 +81,7 @@ public class Graph {
          * @spec.requires n1 != null and n2 != null and label != null
          * @spec.effects Creates an edge that connects the 2 nodes with a label.
          */
-        public edge(node n1, node n2, String label) {
+        public edge(node<T> n1, node<T> n2, E label) {
             this.n1 = n1;
             this.n2 = n2;
             this.label = label;
@@ -96,7 +93,7 @@ public class Graph {
          *
          * @return the starting node
          */
-        public node getStart() {
+        public node<T> getStart() {
             checkRep();
             return n1;
         }
@@ -106,7 +103,7 @@ public class Graph {
          *
          * @return the ending node
          */
-        public node getEnd() {
+        public node<T> getEnd() {
             checkRep();
             return n2;
         }
@@ -116,21 +113,17 @@ public class Graph {
          *
          * @return the label of the edge
          */
-        public String getLabel() {
+        public E getLabel() {
             checkRep();
             return label;
         }
 
         @Override
         public boolean equals(Object o) {
-            if (!(o instanceof edge))
+            if (!(o instanceof edge<?,?>))
                 return false;
-            edge e = (edge) o;
-            if (e.getStart().equals(this.n1) && e.getEnd().equals(this.n2) && e.getLabel().equals(this.label)) {
-                return true;
-            } else {
-                return false;
-            }
+            edge<?, ?> e = (edge<?, ?>) o;
+            return e.getStart().equals(this.n1) && e.getEnd().equals(this.n2) && e.getLabel().equals(this.label);
         }
 
         @Override
@@ -180,7 +173,7 @@ public class Graph {
     }
 
     // graph data structure
-    HashMap<node, ArrayList<edge>> graph = new HashMap<>();
+    HashMap<node<T>, ArrayList<edge<T, E>>> graph = new HashMap<>();
 
         /**
          * Creates an empty graph with no nodes or edges.
@@ -200,7 +193,7 @@ public class Graph {
          * @spec.effects inserts a node into the graph
          * @spec.modifies the current graph instance
          */
-        public void insertNode(node n) {
+        public void insertNode(node<T> n) {
             checkRep();
             if(!graph.containsKey(n)) {
                 if(n == null){
@@ -221,12 +214,12 @@ public class Graph {
          * @spec.effects inserts an edge into the graph
          * @spec.modifies the current graph instance
          */
-        public void insertEdge(node parent, node child, String label) {
+        public void insertEdge(node<T> parent, node<T> child, E label) {
             checkRep();
             if (!graph.containsKey(parent) || !graph.containsKey(child)){
                 throw new IllegalArgumentException();
             }
-            edge newEdge = new edge(parent, child, label);
+            edge<T, E> newEdge = new edge<>(parent, child, label);
             graph.get(parent).add(newEdge);
             checkRep();
         }
@@ -239,7 +232,7 @@ public class Graph {
          * @spec.effects removes a node from the graph
          * @spec.modifies the current graph instance
          */
-        public void removeNode(node n) {
+        public void removeNode(node<E> n) {
             checkRep();
             if (n == null)
                 throw new IllegalArgumentException();
@@ -257,14 +250,14 @@ public class Graph {
          * @spec.effects removes an edge from the graph
          * @spec.modifies the current graph instance
          */
-        public void removeEdge(node parent, node child, String label) {
+        public void removeEdge(node<E> parent, node<E> child, T label) {
             checkRep();
             if (parent == null || child == null || label == null)
                 throw new IllegalArgumentException();
             if (!graph.containsKey(parent) || !graph.containsKey(child)){
                 throw new IllegalArgumentException();
             }
-            edge newEdge = new edge(parent, child, label);
+            edge<E, T> newEdge = new edge<>(parent, child, label);
             graph.get(parent).remove(newEdge);
             checkRep();
         }
@@ -274,12 +267,9 @@ public class Graph {
          *
          * @return list of nodes in the graph
          */
-        public ArrayList<node> listNodes() {
+        public ArrayList<node<T>> listNodes() {
             checkRep();
-            ArrayList<node> nodes = new ArrayList<>();
-            for (node key : graph.keySet()) {
-                nodes.add(key);
-            }
+            ArrayList<node<T>> nodes = new ArrayList<>(graph.keySet());
             checkRep();
             return nodes;
         }
@@ -289,13 +279,11 @@ public class Graph {
          *
          * @return list of edges in the graph
          */
-        public ArrayList<edge> listEdges() {
+        public ArrayList<edge<T, E>> listEdges() {
             checkRep();
-            ArrayList<edge> ret = new ArrayList<>();
-            for (ArrayList<edge> edges: graph.values()) {
-                for (edge e : edges){
-                    ret.add(e);
-                }
+            ArrayList<edge<T, E>> ret = new ArrayList<>();
+            for (ArrayList<edge<T, E>> edges : graph.values()) {
+                ret.addAll(edges);
             }
             checkRep();
             return ret;
@@ -308,18 +296,18 @@ public class Graph {
          * @return a map of edges of a nodes children
          * @spec.requires n != null
          */
-        public HashMap<node, ArrayList<edge>> listChildren(node parent) {
+        public HashMap<node<T>, ArrayList<edge<T, E>>> listChildren(node<T> parent) {
             checkRep();
             if(parent == null)
                 throw new IllegalArgumentException();
-            HashMap<node, ArrayList<edge>> children = new HashMap<>();
+            HashMap<node<T>, ArrayList<edge<T, E>>> children = new HashMap<>();
             if (graph.containsKey(parent)) {
-                ArrayList<edge> edges = graph.get(parent);
-                for(edge e : edges){
+                ArrayList<edge<T, E>> edges = graph.get(parent);
+                for(edge<T, E> e : edges){
                     if(children.containsKey(e.getStart())){
                         children.get(e.getStart()).add(e);
                     } else {
-                        ArrayList<edge> edges2 = new ArrayList<>();
+                        ArrayList<edge<T, E>> edges2 = new ArrayList<>();
                         edges2.add(e);
                         children.put(e.getStart(), edges2);
                     }
@@ -331,9 +319,9 @@ public class Graph {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Graph))
+        if (!(o instanceof Graph<?, ?>))
             return false;
-        Graph g = (Graph) o;
+        Graph<?, ?> g = (Graph<?, ?>) o;
         if (g.listNodes().equals(this.listNodes()) && g.listEdges().equals(this.listEdges())) {
             return true;
         } else {
@@ -344,7 +332,7 @@ public class Graph {
     @Override
     public int hashCode(){
             int hashcode = 0;
-            for (node n : graph.keySet()){
+            for (node<T> n : graph.keySet()){
                 hashcode += n.hashCode();
             }
         return hashcode;
@@ -353,12 +341,12 @@ public class Graph {
         private void checkRep(){
             assert (graph != null);
             if (DEBUG){
-                for (HashMap.Entry<node, ArrayList<edge>> entry : graph.entrySet()) {
-                    node n = entry.getKey();
-                    ArrayList<edge> edges = entry.getValue();
+                for (Map.Entry<node<T>, ArrayList<edge<T, E>>> entry : graph.entrySet()) {
+                    node<T> n = entry.getKey();
+                    ArrayList<edge<T, E>> edges = entry.getValue();
                     assert (n != null);
                     assert (edges != null);
-                    for (edge e : edges){
+                    for (edge<T, E> e : edges){
                         assert (e.getStart().equals(n));
                     }
                 }

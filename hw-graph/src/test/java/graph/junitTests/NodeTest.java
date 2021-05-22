@@ -11,8 +11,8 @@ import static org.junit.Assert.assertEquals;
 public class NodeTest {
 
     //Makes nodes easier to work with
-    public static node node(String name){
-        return new node(name);
+    public static node<String> node(String name){
+        return new node<>(name);
     }
 
     //Test for if getName method gets the name of the node correctly

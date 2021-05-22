@@ -15,17 +15,17 @@ public class MarvelPaths {
      * @throws IllegalArgumentException if filename == null
      * @requires filename != null
      */
-    public static Graph buildGraph(String filename) throws Exception {
+    public static Graph<String, String> buildGraph(String filename) throws Exception {
         if (filename == null)
             throw new IllegalArgumentException("filename cannot be null.");
-        Graph marvelGraph = new Graph();
+        Graph<String, String> marvelGraph = new Graph<>();
         ArrayList<String> chars = new ArrayList<>();
         HashMap<String, ArrayList<String>> books = new HashMap<>();
         MarvelParser.parseData(filename, chars, books);
 
         // add characters as nodes to the graph
         for (String character : chars) {
-            marvelGraph.insertNode(new Graph.node(character));
+            marvelGraph.insertNode(new Graph.node<String>(character));
         }
 
         // connect characters as nodes with books as labels to the edge
@@ -38,8 +38,8 @@ public class MarvelPaths {
                 for (String c2 : charsSublist) {
                     System.out.println("second char " + c2);
                     if (!(c1.equals(c2))) {
-                        marvelGraph.insertEdge(new Graph.node(c1), new Graph.node(c2), book);
-                        marvelGraph.insertEdge(new Graph.node(c2), new Graph.node(c1), book);
+                        marvelGraph.insertEdge(new Graph.node<>(c1), new Graph.node<>(c2), book);
+                        marvelGraph.insertEdge(new Graph.node<>(c2), new Graph.node<>(c1), book);
                     }
                 }
                 i++;
@@ -60,7 +60,7 @@ public class MarvelPaths {
      *                                  not in the graph
      * @requires graph != null && start != null && end != null
      */
-    public static ArrayList<Graph.edge> BFS(Graph graph, String start, String end) {
+    public static ArrayList<Graph.edge<String, String>> BFS(Graph<String, String> graph, String start, String end) {
         if (graph == null)
             throw new IllegalArgumentException("graph cannot be null.");
 
@@ -72,28 +72,27 @@ public class MarvelPaths {
 
         // Each key in paths is a visited node and each value is
         // a path from start to that node.
-        HashMap<String, ArrayList<Graph.edge>> paths = new HashMap<>();
+        HashMap<String, ArrayList<Graph.edge<String, String>>> paths = new HashMap<>();
 
         paths.put(start, new ArrayList<>());
         // start is a key of paths since the above code put it in paths
 
-        //@SuppressWarnings("keyfor")
         String start2 = start;
         worklist.add(start2);
 
         while (!(worklist.isEmpty())) {
             String character = worklist.removeFirst();
             if (character.equals(end)) {
-                ArrayList<Graph.edge> path = paths.get(character);
+                ArrayList<Graph.edge<String, String>> path = paths.get(character);
                 return new ArrayList<>(path);
             }
 
             // use special comparator to get edge in alphabetical order
             // comparator compare the alphabetical order of destination of edge first,
             // then compare the alphabetical order of label of edge
-            Set<Graph.edge> edges = new TreeSet<Graph.edge>(new Comparator<Graph.edge>() {
+            Set<Graph.edge<String, String>> edges = new TreeSet<Graph.edge<String, String>>(new Comparator<Graph.edge<String, String>>() {
                 @Override
-                public int compare(Graph.edge o1, Graph.edge o2) {
+                public int compare(Graph.edge<String, String> o1, Graph.edge<String, String> o2) {
                     if (!(o1.getEnd().equals(o2.getEnd())))
                         return o1.getEnd().compareTo(o2.getEnd());
 
@@ -104,24 +103,23 @@ public class MarvelPaths {
                 }
             });
 
-            HashMap<Graph.node, ArrayList<Graph.edge>> children = graph.listChildren(new Graph.node(character));
-            for (ArrayList<Graph.edge> edgeList : children.values()) {
+            HashMap<Graph.node<String>, ArrayList<Graph.edge<String, String>>> children = graph.listChildren(new Graph.node<String>(character));
+            for (ArrayList<Graph.edge<String, String>> edgeList : children.values()) {
                 edges.addAll(edgeList);
             }
 
-            for (Graph.edge edge : edges) {
+            for (Graph.edge<String, String> edge : edges) {
                 String dest = edge.getEnd().getName();
 
                 if (!(paths.containsKey(dest))) {
                     // if the node is not already visited, then map the path
                     // to this node by appending edge from character to this node
                     // to path from start to character
-                    ArrayList<Graph.edge> path = paths.get(character);
-                    ArrayList<Graph.edge> path_post = new ArrayList<>(path);
+                    ArrayList<Graph.edge<String, String>> path = paths.get(character);
+                    ArrayList<Graph.edge<String, String>> path_post = new ArrayList<>(path);
                     path_post.add(edge);
                     paths.put(dest, path_post);
                     // dest is a key of paths since the above code put it in paths
-                    //@SuppressWarnings("keyfor")
                     /*@KeyFor("paths")*/
                     String dest2 = dest;
                     worklist.add(dest2);  // mark this node as visited
@@ -141,7 +139,7 @@ public class MarvelPaths {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        Graph mgraph = MarvelPaths.buildGraph("marvel.csv");
+        Graph<String, String> mgraph = MarvelPaths.buildGraph("marvel.csv");
         System.out.println("Find the shortest path for two Marvel characters.");
         Scanner reader = new Scanner(System.in);
         String start, end;
@@ -152,12 +150,12 @@ public class MarvelPaths {
 
         String currentNode = start;
         String result = "path from " + start + " to " + end + ":";
-        ArrayList<Graph.edge> path = MarvelPaths.BFS(mgraph, start, end);
+        ArrayList<Graph.edge<String, String>> path = MarvelPaths.BFS(mgraph, start, end);
 
         if (path == null) {
             result += "\n" + "no path found";
         } else {
-            for (Graph.edge edge : path) {
+            for (Graph.edge<String, String> edge : path) {
                 result += "\n" + currentNode + " to " + edge.getStart() + " via " + edge.getLabel();
                 currentNode = edge.getEnd().getName();
             }

@@ -7,9 +7,9 @@ import org.junit.Test;
 
 public class MarvelPathsTest {
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     // Test if filename is bad, if it will run
     public void MarvelGraphTest() throws Exception {
-        assertNotEquals(new Graph(), MarvelPaths.buildGraph("bad file name"));
+        assertNotEquals(new Graph<String, String>(), MarvelPaths.buildGraph("bad file name"));
     }
 }

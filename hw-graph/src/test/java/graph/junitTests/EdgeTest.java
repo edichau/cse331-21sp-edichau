@@ -10,16 +10,16 @@ import static org.junit.Assert.assertEquals;
  * Unit test for Edge ADT implementation
  */
 public class EdgeTest {
-    public node n1 = new node("n1");
-    public node n2 = new node("n2");
+    public node<String> n1 = new node<>("n1");
+    public node<String> n2 = new node<>("n2");
     //makes nodes easier to work with
-    public static node node(String name){
-        return new node(name);
+    public static node<String> node(String name){
+        return new node<String>(name);
     }
 
     //Makes edges easier to work with
-    public static edge edge(node n1, node n2, String label){
-        return new edge(n1, n2, "test");
+    public static edge<String, String> edge(node<String> n1, node<String> n2, String label){
+        return new edge<String, String>(n1, n2, "test");
     }
 
     //Test for if getLabel method gets the label of the edge correctly

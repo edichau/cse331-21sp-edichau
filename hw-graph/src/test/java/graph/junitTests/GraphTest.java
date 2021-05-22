@@ -16,30 +16,30 @@ import static org.junit.Assert.assertEquals;
  */
 public class GraphTest {
 
-    public node n1 = new node("n1");
-    public node n2 = new node("n2");
-    public edge e1 = new edge(n1, n2, "e1");
-    public edge e11 = new edge(n1, n2, "n1 to n2 again");
-    public edge e2 = new edge(n2, n1, "n2 to n1");
-    public edge e3 = new edge(n1, n1, "n1 to n1");
-    public edge e4 = new edge(n2, n2, "n2 to n2");
-    public ArrayList<node> nodes = new ArrayList<>();
-    public ArrayList<edge> edges = new ArrayList<>();
-    public Graph testGraph = new Graph();
+    public node<String> n1 = new node<String>("n1");
+    public node<String> n2 = new node<String>("n2");
+    public edge<String, String> e1 = new edge<String, String>(n1, n2, "e1");
+    public edge<String, String> e11 = new edge<>(n1, n2, "n1 to n2 again");
+    public edge<String, String> e2 = new edge<>(n2, n1, "n2 to n1");
+    public edge<String, String> e3 = new edge<>(n1, n1, "n1 to n1");
+    public edge<String, String> e4 = new edge<>(n2, n2, "n2 to n2");
+    public ArrayList<node<String>> nodes = new ArrayList<>();
+    public ArrayList<edge<String, String>> edges = new ArrayList<>();
+    public Graph<String, String> testGraph = new Graph<>();
 
     //makes nodes easier to work with
-    public static node node(String name){
-        return new node(name);
+    public static node<String> node(String name){
+        return new node<String>(name);
     }
 
     //Makes edges easier to work with
-    public static edge edge(node n1, node n2, String label){
-        return new edge(n1, n2, "test");
+    public static edge<String, String> edge(node<String> n1, node<String> n2, String label){
+        return new edge<String, String>(n1, n2, "test");
     }
 
     @After
     public void clear(){
-        testGraph = new Graph();
+        testGraph = new Graph<String, String>();
         nodes.clear();
         edges.clear();
     }
@@ -122,7 +122,7 @@ public class GraphTest {
         testGraph.insertNode(n1);
         testGraph.insertNode(n2);
         testGraph.insertEdge(n1, n2, "e1");
-        HashMap<node, ArrayList<edge>> test = new HashMap<>();
+        HashMap<node<String>, ArrayList<edge<String, String>>> test = new HashMap<>();
         edges.add(e1);
         test.put(n1, edges);
         assertEquals("listChildren() not listing children properly", test, testGraph.listChildren(n1));
@@ -132,7 +132,7 @@ public class GraphTest {
     @Test
     public void listChildrenNoneTest() {
         testGraph.insertNode(n1);
-        HashMap<node, ArrayList<edge>> test = new HashMap<>();
+        HashMap<node<String>, ArrayList<edge<String, String>>> test = new HashMap<>();
         assertEquals("listChildren() not listing children properly", test, testGraph.listChildren(n1));
     }
 }

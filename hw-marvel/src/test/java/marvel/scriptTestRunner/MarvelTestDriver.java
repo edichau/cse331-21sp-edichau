@@ -47,7 +47,7 @@ public class MarvelTestDriver {
      * String -> Graph: maps the names of graphs to the actual graph
      **/
     // TODO for the student: Uncomment and parameterize the next line correctly:
-    private final Map<String, Graph> graphs = new HashMap<String, Graph>();
+    private final Map<String, Graph<String, String>> graphs = new HashMap<String, Graph<String, String>>();
     private final PrintWriter output;
     private final BufferedReader input;
 
@@ -138,7 +138,7 @@ public class MarvelTestDriver {
     }
 
     private void createGraph(String graphName) {
-        Graph graph = new Graph();
+        Graph<String, String> graph = new Graph<>();
 
         graphs.put(graphName, graph);
         output.println("created the graph " + graphName);
@@ -149,17 +149,18 @@ public class MarvelTestDriver {
             throw new CommandException("Bad arguments to FindPath: " + arguments);
         }
 
-        Graph graph = graphs.get(arguments.get(0));
+        Graph<String, String> graph = graphs.get(arguments.get(0));
         String start = arguments.get(1);
         String end = arguments.get(0);
         BFS(graph, start, end);
     }
 
-    private void BFS(Graph graph, String start, String end) {
-        ArrayList<Graph.edge> path = MarvelPaths.BFS(graph, start, end);
+    private void BFS(Graph<String, String> graph, String start, String end) {
+        ArrayList<Graph.edge<String, String>> path = MarvelPaths.BFS(graph, start, end);
 
         output.println("path from " + start + " to " + end + ":");
-        for (Graph.edge edge : path){
+        assert path != null;
+        for (Graph.edge<String, String> edge : path){
             output.println(edge.getStart() + " to " + edge.getEnd() + " via " + edge.getLabel());
         }
     }
@@ -175,7 +176,7 @@ public class MarvelTestDriver {
     }
 
     private void buildGraph(String graphName, String filename) throws Exception {
-        Graph graph = MarvelPaths.buildGraph(filename);
+        Graph<String, String> graph = MarvelPaths.buildGraph(filename);
 
         graphs.put(graphName, graph);
         output.println("loaded graph " + graphName);
@@ -193,8 +194,8 @@ public class MarvelTestDriver {
     }
 
     private void addNode(String graphName, String nodeName) {
-        Graph graph = graphs.get(graphName);
-        node node = new node(nodeName);
+        Graph<String, String> graph = graphs.get(graphName);
+        node<String> node = new node<>(nodeName);
         graph.insertNode(node);
         output.println("added node " + nodeName +  " to " + graphName);
     }
@@ -215,10 +216,10 @@ public class MarvelTestDriver {
     private void addEdge(String graphName, String parentName, String childName,
                          String edgeLabel) {
         // TODO Insert your code here.
-        Graph graph = graphs.get(graphName);
-        node n1 = new node(parentName);
-        node n2 = new node(childName);
-        edge edge = new edge(n1, n2, edgeLabel);
+        Graph<String, String> graph = graphs.get(graphName);
+        node<String> n1 = new node<>(parentName);
+        node<String> n2 = new node<>(childName);
+        edge<String, String> edge = new edge<>(n1, n2, edgeLabel);
         graph.insertEdge(n1, n2, edgeLabel);
         output.println("added edge " + edgeLabel + " from " + parentName + " to " + childName + " in " + graphName);
     }
@@ -235,10 +236,10 @@ public class MarvelTestDriver {
     private void listNodes(String graphName) {
         // TODO Insert your code here.
 
-        Graph graph = graphs.get(graphName);
-        ArrayList<node> nodes = graph.listNodes();
+        Graph<String, String> graph = graphs.get(graphName);
+        ArrayList<node<String>> nodes = graph.listNodes();
         String ret = "";
-        for (node n: nodes) {
+        for (node<String> n: nodes) {
             ret = ret + n.getName() + " ";
         }
         output.println("Graph contains: " + ret);
@@ -257,11 +258,11 @@ public class MarvelTestDriver {
     private void listChildren(String graphName, String parentName) {
         // TODO Insert your code here.
 
-        Graph graph = graphs.get(graphName);
+        Graph<String, String> graph = graphs.get(graphName);
         String ret = "";
-        node node = new node(parentName);
-        HashMap<node, ArrayList<edge>> children = graph.listChildren(node);
-        for (node n: children.keySet()) {
+        node<String> node = new node<>(parentName);
+        HashMap<node<String>, ArrayList<edge<String, String>>> children = graph.listChildren(node);
+        for (node<String> n: children.keySet()) {
             ret = ret + n.getName() + " ";
         }
         output.println("the children of " + parentName + " in " + graphName + " are: " + ret);

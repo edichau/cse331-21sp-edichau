@@ -91,9 +91,11 @@ class Grid extends Component<GridProps, GridState> {
         let edgeList : string[] = this.props.edgeList;
         let parts = [];
         edgeList.forEach(edge => {
-            parts = edge.split(" ");
-
+            if(edge.length !== 0){
+                parts = edge.split(" ");
                 this.drawLine(ctx, parts);
+            }
+
         });
     };
 

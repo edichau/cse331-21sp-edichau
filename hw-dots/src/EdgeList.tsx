@@ -19,6 +19,8 @@ interface EdgeListProps {
                                  // change the type of edges so it isn't `any`
     edgeList: string[];
     onEdgeChange(edgeList: string[]): void;
+
+    gridSize: number;
 }
 
 /**
@@ -34,26 +36,40 @@ class EdgeList extends Component<EdgeListProps> {
 
     onDrawButtonPress = () => {
         const edges: string = this.props.edges;
+        let gridSize: number = this.props.gridSize;
         //const userKeyRegExp = /^[0-9]+,[0-9]+\s[0-9]+,[0-9]+\s[a-zA-Z]+\n*$/;
         //if (userKeyRegExp.test(edges)){
             const edgeList: string[] = edges.split("\n");
+
             let correct : boolean = true;
+            let largestCoord : number = 0;
             edgeList.forEach(edge => {
-                let parts: string[] = edge.split(" ");
-                if(parts.length !== 3){
-                    correct = false;
-                }
-                for(let i = 0; i < parts.length; i++){
-                    if(i < 2){
-                        if(parts[i].split(",").length !== 2){
-                            correct = false;
+                if(edge.length !== 0) {
+
+                    let parts: string[] = edge.split(" ");
+                    if (parts.length !== 3) {
+                        correct = false;
+                    }
+                    for (let i = 0; i < parts.length; i++) {
+                        if (i < 2) {
+                            if (parts[i].split(",").length !== 2) {
+                                correct = false;
+                            }
+                            if(parseInt(parts[i].split(",")[0]) > largestCoord){
+                                largestCoord = parseInt(parts[i].split(",")[0])
+                            }
+                            if(parseInt(parts[i].split(",")[1]) > largestCoord){
+                                largestCoord = parseInt(parts[i].split(",")[1])
+                            }
                         }
                     }
                 }
-            });
 
-            if(!correct){
+            });
+            if(!correct) {
                 alert("please enter in this format: 'x1,y1 x2,y2 COLOR' with a 1 line for each new line");
+            }else if (largestCoord > gridSize){
+                alert("Cannot draw edges, grid must be at least size of " + largestCoord+1);
             } else {
                 this.props.onEdgeChange(edgeList);
             }

@@ -66,7 +66,7 @@ class App extends Component<{}, AppState> { // <- {} means no props.
 
                 <EdgeList edges = {this.state.edges.toString()} onChange={this.updateEdgeList}
                             edgeList={this.state.edgeList}
-                          onEdgeChange={this.updateParts}
+                          onEdgeChange={this.updateParts} gridSize={this.state.gridSize}
                 />
                 <Grid size={this.state.gridSize} width={canvas_size} height={canvas_size} edgeList={this.state.edgeList}/>
             </div>

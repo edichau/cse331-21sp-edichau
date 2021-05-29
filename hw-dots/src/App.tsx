@@ -19,6 +19,8 @@ import "./App.css";
 
 interface AppState {
     gridSize: number;  // size of the grid to display
+    edges: string;
+    edgeList: string[];
 }
 
 class App extends Component<{}, AppState> { // <- {} means no props.
@@ -27,23 +29,46 @@ class App extends Component<{}, AppState> { // <- {} means no props.
         super(props);
         this.state = {
             gridSize: 4,
+            edges: "",
+            edgeList: []
         };
     }
 
     updateGridSize = (newSize: number) => {
         this.setState({
-            gridSize: newSize
+            gridSize: newSize,
         });
     };
 
+    updateEdgeList = (edges: string) => {
+        this.setState({
+            edges: edges
+        });
+    };
+
+    updateParts = (edgeList: string[]) => {
+        this.setState({
+        edgeList: edgeList
+    });
+    };
+
+    // emptyEdges = () => {
+    //     this.setState({
+    //         edgeList: []
+    //     });
+    // };
     render() {
         const canvas_size = 500;
         return (
             <div>
                 <p id="app-title">Connect the Dots!</p>
                 <GridSizePicker value={this.state.gridSize.toString()} onChange={this.updateGridSize}/>
-                <Grid size={this.state.gridSize} width={canvas_size} height={canvas_size}/>
-                <EdgeList onChange={(value) => {console.log("EdgeList onChange", value)}}/>
+
+                <EdgeList edges = {this.state.edges.toString()} onChange={this.updateEdgeList}
+                            edgeList={this.state.edgeList}
+                          onEdgeChange={this.updateParts}
+                />
+                <Grid size={this.state.gridSize} width={canvas_size} height={canvas_size} edgeList={this.state.edgeList}/>
             </div>
 
         );

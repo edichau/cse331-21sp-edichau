@@ -15,6 +15,7 @@ interface GridProps {
     size: number;    // size of the grid to display
     width: number;   // width of the canvas on which to draw
     height: number;  // height of the canvas on which to draw
+    edgeList: string[];
 }
 
 interface GridState {
@@ -86,6 +87,14 @@ class Grid extends Component<GridProps, GridState> {
         for (let coordinate of coordinates) {
             this.drawCircle(ctx, coordinate);
         }
+
+        let edgeList : string[] = this.props.edgeList;
+        let parts = [];
+        edgeList.forEach(edge => {
+            parts = edge.split(" ");
+
+                this.drawLine(ctx, parts);
+        });
     };
 
     /**
@@ -94,12 +103,27 @@ class Grid extends Component<GridProps, GridState> {
      */
     getCoordinates = (): [number, number][] => {
         // A hardcoded 4x4 grid. Probably not going to work when we change the grid size...
-        return [
-            [100, 100], [100, 200], [100, 300], [100, 400],
-            [200, 100], [200, 200], [200, 300], [200, 400],
-            [300, 100], [300, 200], [300, 300], [300, 400],
-            [400, 100], [400, 200], [400, 300], [400, 400]
-        ];
+        let grid: [number, number][] = [];
+        let space = this.props.width / (this.props.size+1);
+
+        for(let i = 1; i <= this.props.size; i++){
+            for(let j = 1; j <= this.props.size; j++){
+                grid.push([i*space, j*space]);
+            }
+        }
+        return grid;
+    };
+
+    drawLine = (ctx: CanvasRenderingContext2D, parts:string[]) => {
+        ctx.beginPath();
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = parts[2];
+        let firstCoords = parts[0].split(",");
+        let secondCoords = parts[1].split(",");
+        let space = this.props.width / (this.props.size+1);
+        ctx.moveTo(space*(parseInt(firstCoords[0])+1), space*(parseInt(firstCoords[1])+1));
+        ctx.lineTo(space*(parseInt(secondCoords[0])+1), space*(parseInt(secondCoords[1])+1));
+        ctx.stroke();
     };
 
     drawCircle = (ctx: CanvasRenderingContext2D, coordinate: [number, number]) => {
@@ -116,7 +140,7 @@ class Grid extends Component<GridProps, GridState> {
         return (
             <div id="grid">
                 <canvas ref={this.canvasReference} width={this.props.width} height={this.props.height}/>
-                <p>Current Grid Size: 4</p>
+                <p>Current Grid Size: {this.props.size}</p>
             </div>
         );
     }

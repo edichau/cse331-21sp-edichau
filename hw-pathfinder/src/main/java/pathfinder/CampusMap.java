@@ -82,7 +82,6 @@ public class CampusMap implements ModelAPI {
     @Override
     public Path<Point> findShortestPath(String startShortName, String endShortName) {
         // Build Campus map Graph
-        throw new IllegalArgumentException("incomplete");
 
         Graph<CampusPath, Double> cMap = new Graph<>();
         for (CampusPath path : paths) {

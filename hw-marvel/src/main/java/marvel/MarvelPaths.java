@@ -33,10 +33,10 @@ public class MarvelPaths {
             ArrayList<String> charsInBook = books.get(book);
             int i = 1;
             for (String c1 : charsInBook) {
-                System.out.println("first char " + c1);
+                //System.out.println("first char " + c1);
                 List<String> charsSublist = charsInBook.subList(i, charsInBook.size());
                 for (String c2 : charsSublist) {
-                    System.out.println("second char " + c2);
+                    //System.out.println("second char " + c2);
                     if (!(c1.equals(c2))) {
                         marvelGraph.insertEdge(new Graph.node<>(c1), new Graph.node<>(c2), book);
                         marvelGraph.insertEdge(new Graph.node<>(c2), new Graph.node<>(c1), book);
@@ -90,7 +90,7 @@ public class MarvelPaths {
             // use special comparator to get edge in alphabetical order
             // comparator compare the alphabetical order of destination of edge first,
             // then compare the alphabetical order of label of edge
-            Set<Graph.edge<String, String>> edges = new TreeSet<Graph.edge<String, String>>(new Comparator<Graph.edge<String, String>>() {
+            Set<Graph.edge<String, String>> edges = new TreeSet<>(new Comparator<Graph.edge<String, String>>() {
                 @Override
                 public int compare(Graph.edge<String, String> o1, Graph.edge<String, String> o2) {
                     if (!(o1.getEnd().equals(o2.getEnd())))
@@ -156,7 +156,7 @@ public class MarvelPaths {
             result += "\n" + "no path found";
         } else {
             for (Graph.edge<String, String> edge : path) {
-                result += "\n" + currentNode + " to " + edge.getStart() + " via " + edge.getLabel();
+                result += "\n" + currentNode + " to " + edge.getEnd().getName() + " via " + edge.getLabel();
                 currentNode = edge.getEnd().getName();
             }
         }

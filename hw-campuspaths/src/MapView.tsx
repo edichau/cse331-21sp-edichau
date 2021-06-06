@@ -12,11 +12,16 @@
 import React, {Component} from 'react';
 import "./MapView.css";
 
+interface MapProps {
+    locationMap: Map<String, [number, number]>;
+    path: any;
+}
+
 interface MapViewState {
     backgroundImage: HTMLImageElement | null;
 }
 
-class MapView extends Component<{}, MapViewState> {
+class MapView extends Component<{}, MapViewState, MapProps> {
 
     // NOTE:
     // This component is a suggestion for you to use, if you would like to.
@@ -27,7 +32,7 @@ class MapView extends Component<{}, MapViewState> {
 
     canvas: React.RefObject<HTMLCanvasElement>;
 
-    constructor(props: {}) {
+    constructor(props: MapProps) {
         super(props);
         this.state = {
             backgroundImage: null
@@ -36,12 +41,22 @@ class MapView extends Component<{}, MapViewState> {
     }
 
     componentDidMount() {
-        // Might want to do something here?
+        this.fetchAndSaveImage();
+        this.drawBackgroundImage();
     }
 
     componentDidUpdate() {
-        // Might want something here too...
+        this.drawBackgroundImage();
+        // this.drawPath();
     }
+
+    click(event: any) {
+        let xPosition = event.clientX;
+        let yPosition = event.clientY;
+        let clientPoint:[number, number] = [xPosition, yPosition];
+        // console.log(xPosition, yPosition);
+        // console.log(event);
+    };
 
     fetchAndSaveImage() {
         // Creates an Image object, and sets a callback function
@@ -71,6 +86,52 @@ class MapView extends Component<{}, MapViewState> {
             ctx.drawImage(this.state.backgroundImage, 0, 0);
         }
     }
+
+    // drawPath() {
+    //     let canvas = this.canvas.current;
+    //     if (canvas === null) throw Error("Unable to draw, no canvas ref.");
+    //     let ctx = canvas.getContext("2d");
+    //     let l = this.props.path.paths;
+    //     if (l !== undefined) {
+    //         for (let i = 0; i < l.length; i++) {
+    //             this.drawLine(ctx, [l[i].start.x, l[i].start.y], [l[i].end.x, l[i].end.y]);
+    //             this.drawCircle(ctx, [l[i].start.x, l[i].start.y], "purple");
+    //         }
+    //     }
+    // };
+
+    drawLine = (ctx: any,  coordinate1: [number, number],  coordinate2: [number, number]) => {
+        // default color is set to white
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.moveTo(coordinate1[0], coordinate1[1]);
+        ctx.lineTo(coordinate2[0], coordinate2[1]);
+        ctx.stroke();
+    };
+
+    // drawLocations() {
+    //     let canvas = this.canvas.current;
+    //     if (canvas === null) throw Error("Unable to draw, no canvas ref.");
+    //     let ctx = canvas.getContext("2d");
+    //     // @ts-ignore
+    //     for (let key of this.props.locationMap.keys()) {
+    //         let point = this.props.locationMap.get(key);
+    //         if (point != undefined) {
+    //             this.drawCircle(ctx, point, "blue");
+    //         }
+    //     }
+    // };
+
+    drawCircle = (ctx: any,  coordinate1: [number, number], color:string) => {
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(coordinate1[0],coordinate1[1],5,0,2*Math.PI);
+        ctx.stroke();
+        ctx.fill();
+    };
 
     render() {
         return (

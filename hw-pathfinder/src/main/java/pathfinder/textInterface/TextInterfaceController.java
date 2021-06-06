@@ -11,6 +11,7 @@
 
 package pathfinder.textInterface;
 
+import graph.Graph;
 import pathfinder.ModelAPI;
 import pathfinder.datastructures.Path;
 import pathfinder.datastructures.Point;
@@ -106,6 +107,7 @@ public class TextInterfaceController implements InputHandler {
      * Responds properly to the user requesting a list of all buildings and their full names.
      */
     private void doInputB() {
+        //@SuppressWarnings("unchecked")
         Map<String, String> buildings = model.buildingNames();
         view.showBuildings(buildings);
         view.basePrompt();
@@ -129,7 +131,8 @@ public class TextInterfaceController implements InputHandler {
             view.basePrompt();
             return;
         }
-        Path<Point> path = model.findShortestPath(start, end);
+
+        Path<Graph.node<Point>> path = model.findShortestPath(start, end);
         if(path == null) {
             // No path. This is guaranteed not to happen by the homework spec,
             // so let's fall on our face if it does.

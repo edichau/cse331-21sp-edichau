@@ -11,10 +11,12 @@
 
 package pathfinder.datastructures;
 
+import graph.Graph;
+
 /**
  * Represents an immutable cartesian coordinate point.
  */
-public class Point {
+public class Point implements Comparable<Point> {
 
     // AF(this) =
     //      the x coordinate -> x
@@ -88,5 +90,16 @@ public class Point {
     @Override
     public int hashCode() {
         return (31 * Double.hashCode(x)) + Double.hashCode(y);
+    }
+
+    @Override
+    public int compareTo(Point o) {
+        if (this.x > o.getX()){
+            return 1;
+        }
+        if (this.x < o.getX()){
+            return -1;
+        }
+        return Double.compare(this.y, o.getY());
     }
 }

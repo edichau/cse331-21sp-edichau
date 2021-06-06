@@ -23,7 +23,7 @@ import java.util.PriorityQueue;
  * Path#getStart() and Path#getEnd(). Also contains a cached
  * version of the total cost along this path, for efficient repeated access.
  */
-public class Path<T> implements Iterable<Path<T>.Segment>, Comparable<Path<Point>> {
+public class Path<T> implements Iterable<Path<T>.Segment> {
 
     // AF(this) =
     //      first point in the path => start

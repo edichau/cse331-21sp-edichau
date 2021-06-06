@@ -10,12 +10,76 @@
  */
 
 import React, {Component} from 'react';
+import GridSizePicker from "../../hw-dots/src/GridSizePicker";
+import EdgeList from "../../hw-dots/src/EdgeList";
+import Grid from "../../hw-dots/src/Grid";
+import "./App.css";
+import MapView from "./MapView";
+import Route from "./Route";
 
-class App extends Component<{}, {}> {
+interface AppState {
+    buildingData: any;
+    path: any;
+}
+
+class App extends Component<{}, AppState> {
+
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            buildingData: new Map<String, [number, number]>(),
+            // locationMap: new Map<String, [number, number]>(),
+            path: new Route(),
+        };
+    }
+
+    async loadBuildingData() {
+        try{
+            let input = await fetch("http://localhost:4567/campusBuiding");
+            if (!input.ok){
+                alert("Building data invalid");
+                return;
+            }
+            let parsed = await input.json();
+            this.setState({
+                buildingData: parsed
+            })
+        } catch (e){
+            alert("Building data invalid" + e);
+        }
+    };
+
+    async getPath(start: string, end: string) {
+        try{
+            let input = await fetch("http://localhost:4567/findPath?startBuilding=" + start + "&endBuiding="+ end);
+            if (!input.ok){
+                alert("Path data invalid");
+                return;
+            }
+
+            let parsed = await input.json();
+            this.setState({
+                path: parsed
+            })
+        } catch (e){
+            alert("Building data invalid" + e);
+        }
+    };
+
+    updatePath = (newPath: Route) => {
+        this.setState({
+            path: newPath,
+        });
+    };
+
 
     render() {
         return (
-            <p>Here's the beginning of your AMAZING CampusPaths GUI!</p>
+            <div>
+                <p id="app-title">Campus Map</p>
+                <MapView />
+            </div>
+
         );
     }
 

@@ -13,7 +13,6 @@ import React, {Component} from 'react';
 import "./MapView.css";
 
 interface MapProps {
-    locationMap: Map<String, [number, number]>;
     path: any;
 }
 
@@ -21,7 +20,8 @@ interface MapViewState {
     backgroundImage: HTMLImageElement | null;
 }
 
-class MapView extends Component<{}, MapViewState, MapProps> {
+
+class MapView extends Component<MapProps, MapViewState> {
 
     // NOTE:
     // This component is a suggestion for you to use, if you would like to.
@@ -42,21 +42,12 @@ class MapView extends Component<{}, MapViewState, MapProps> {
 
     componentDidMount() {
         this.fetchAndSaveImage();
-        this.drawBackgroundImage();
+        this.redraw();
     }
 
     componentDidUpdate() {
-        this.drawBackgroundImage();
-        // this.drawPath();
+        this.redraw();
     }
-
-    click(event: any) {
-        let xPosition = event.clientX;
-        let yPosition = event.clientY;
-        let clientPoint:[number, number] = [xPosition, yPosition];
-        // console.log(xPosition, yPosition);
-        // console.log(event);
-    };
 
     fetchAndSaveImage() {
         // Creates an Image object, and sets a callback function
@@ -87,51 +78,30 @@ class MapView extends Component<{}, MapViewState, MapProps> {
         }
     }
 
-    // drawPath() {
-    //     let canvas = this.canvas.current;
-    //     if (canvas === null) throw Error("Unable to draw, no canvas ref.");
-    //     let ctx = canvas.getContext("2d");
-    //     let l = this.props.path.paths;
-    //     if (l !== undefined) {
-    //         for (let i = 0; i < l.length; i++) {
-    //             this.drawLine(ctx, [l[i].start.x, l[i].start.y], [l[i].end.x, l[i].end.y]);
-    //             this.drawCircle(ctx, [l[i].start.x, l[i].start.y], "purple");
-    //         }
-    //     }
-    // };
+    redraw = () => {
+        this.drawBackgroundImage();
+        if (this.props.path.cost > 0) {
+            let canvas = this.canvas.current;
+            if (canvas === null) throw Error("Unable to draw");
+            let ctx = canvas.getContext("2d");
+            if (ctx === null) throw Error("Unable to draw");
 
-    drawLine = (ctx: any,  coordinate1: [number, number],  coordinate2: [number, number]) => {
-        // default color is set to white
-        ctx.strokeStyle = "red";
-        ctx.lineWidth = 5;
-        ctx.beginPath();
-        ctx.moveTo(coordinate1[0], coordinate1[1]);
-        ctx.lineTo(coordinate2[0], coordinate2[1]);
-        ctx.stroke();
-    };
+            let path = this.props.path.path;
+            let start = path[0];
+            ctx.beginPath()
+            ctx.strokeStyle = "Red";
+            ctx.lineWidth = 15;
 
-    // drawLocations() {
-    //     let canvas = this.canvas.current;
-    //     if (canvas === null) throw Error("Unable to draw, no canvas ref.");
-    //     let ctx = canvas.getContext("2d");
-    //     // @ts-ignore
-    //     for (let key of this.props.locationMap.keys()) {
-    //         let point = this.props.locationMap.get(key);
-    //         if (point != undefined) {
-    //             this.drawCircle(ctx, point, "blue");
-    //         }
-    //     }
-    // };
-
-    drawCircle = (ctx: any,  coordinate1: [number, number], color:string) => {
-        ctx.strokeStyle = color;
-        ctx.fillStyle = color;
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.arc(coordinate1[0],coordinate1[1],5,0,2*Math.PI);
-        ctx.stroke();
-        ctx.fill();
-    };
+            //Path provides x and y coordinates including decimals but since we only want pixels
+            // we round to the nearest pixel.
+            ctx.moveTo(Math.round(start.start.name.x), Math.round(start.start.name.y));
+            for (let i = 0; i < path.length; i++) {
+                let point = path[i];
+                ctx.lineTo(Math.round(point.end.name.x), Math.round(point.end.name.y));
+            }
+            ctx.stroke();
+        }
+    }
 
     render() {
         return (

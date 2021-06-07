@@ -10,7 +10,7 @@ public class Dijkstra<T extends Comparable<T>>{
 
         Graph.node<T> startNode = new Graph.node<>(start);
         Graph.node<T> destNode = new Graph.node<>(dest);
-        PriorityQueue<Path<Graph.node<T>>> active = new PriorityQueue<>();
+        Queue<Path<Graph.node<T>>> active = new PriorityQueue<>(Comparator.comparingDouble(Path::getCost));
         // Each element is a path from start to a given node.
         // A path's “priority” in the queue is the total cost of that path.
         // Nodes for which no path is known yet are not in the queue.

@@ -102,9 +102,8 @@ public class CampusMap implements ModelAPI {
         // finds buildings we will be pathing to
         Point start = null;
         Point end = null;
-        System.out.println("burh 1");
         if (!shortNameExists(startShortName) | !shortNameExists(endShortName)) {
-            System.out.println("burh 2");
+            System.out.println(startShortName + " " + endShortName);
             throw new IllegalArgumentException();
         }
         for (CampusBuilding building : buildings){

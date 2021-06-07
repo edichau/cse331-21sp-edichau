@@ -16,6 +16,7 @@ import Grid from "../../hw-dots/src/Grid";
 import "./App.css";
 import MapView from "./MapView";
 import Route from "./Route";
+import UserIn from "./UserInput";
 
 interface AppState {
     buildingData: any;
@@ -26,16 +27,17 @@ class App extends Component<{}, AppState> {
 
     constructor(props: any) {
         super(props);
+        this.loadBuildingData();
         this.state = {
-            buildingData: new Map<String, [number, number]>(),
+            buildingData: {},
             // locationMap: new Map<String, [number, number]>(),
-            path: new Route(),
+            path: {},
         };
     }
 
     async loadBuildingData() {
         try{
-            let input = await fetch("http://localhost:4567/campusBuiding");
+            let input = await fetch("http://localhost:4567/campusBuilding");
             if (!input.ok){
                 alert("Building data invalid");
                 return;
@@ -51,33 +53,48 @@ class App extends Component<{}, AppState> {
 
     async getPath(start: string, end: string) {
         try{
-            let input = await fetch("http://localhost:4567/findPath?startBuilding=" + start + "&endBuiding="+ end);
+            let input = await fetch("http://localhost:4567/findPath?startBuilding=" + start + "&endBuilding="+ end);
             if (!input.ok){
                 alert("Path data invalid");
                 return;
             }
 
             let parsed = await input.json();
+            console.log(parsed);
             this.setState({
-                path: parsed
+                path: parsed,
             })
         } catch (e){
             alert("Building data invalid" + e);
         }
     };
 
-    updatePath = (newPath: Route) => {
-        this.setState({
-            path: newPath,
-        });
+    updatePath = (start: string, end: string) => {
+        if (start === "" || end === "") {
+            this.setState({
+                path: []
+            })
+            return;
+        }
+        let obj = this.state.buildingData
+        const startKey = Object.keys(obj).find(key => obj[key] === start)
+        const endKey = Object.keys(obj).find(key => obj[key] === end)
+        if (startKey === undefined || endKey === undefined) {
+            alert("Error getting buildings")
+        } else {
+            this.getPath(startKey, endKey);
+        }
     };
 
 
     render() {
+        let buildings: String[] = Object.values(this.state.buildingData);
+        buildings.unshift("");
         return (
             <div>
                 <p id="app-title">Campus Map</p>
-                <MapView />
+                <UserIn onChange={this.updatePath} value={buildings}/>
+                <MapView path={this.state.path}/>
             </div>
 
         );

@@ -157,12 +157,14 @@ public class PathfinderTestDriver {
         Path<node<String>> path = dij.Dij(graph, start, end);
         double totalCost = 0;
         output.println("path from " + start + " to " + end + ":");
-        assert path != null;
-        for (Path<node<String>>.Segment edge : path){
-            output.println(edge.getStart().getName() + " to " + edge.getEnd().getName() + " with weight " + String.format("%.3f", edge.getCost()));
-            totalCost += edge.getCost();
+        if (path != null){
+            for (Path<node<String>>.Segment edge : path){
+                output.println(edge.getStart().getName() + " to " + edge.getEnd().getName() + " with weight " + String.format("%.3f", edge.getCost()));
+                totalCost += edge.getCost();
+            }
+            output.println("total cost: " + String.format("%.3f", totalCost));
         }
-        output.println("total cost: " + String.format("%.3f", totalCost));
+
     }
 
     private void addNode(List<String> arguments) {

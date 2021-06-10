@@ -50,6 +50,6 @@ public class Dijkstra<T extends Comparable<T>>{
         // If the loop terminates, then no path exists from start to dest.
         // The implementation should indicate this to the client.
         }
-        throw new IllegalArgumentException("no path");
+        return null;
     }
 }

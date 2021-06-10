@@ -1,7 +1,7 @@
 # Tests that a graph can be created
 
 # Create a graph
-Created graph graph1
+created graph graph1
 
-# Print the nodes in the graph and the outgoing edges from n1
+# Print the nodes in the graph to verify it is empty
 graph1 contains:

@@ -138,7 +138,7 @@ public class PathfinderTestDriver {
         Graph<String, Double> graph = new Graph<>();
 
         graphs.put(graphName, graph);
-        output.println("created the graph " + graphName);
+        output.println("created graph " + graphName);
     }
 
     private void Dijkstra(List<String> arguments) {
@@ -148,7 +148,7 @@ public class PathfinderTestDriver {
 
         Graph<String, Double> graph = graphs.get(arguments.get(0));
         String start = arguments.get(1);
-        String end = arguments.get(0);
+        String end = arguments.get(2);
         Dijkstra(graph, start, end);
     }
 
@@ -159,7 +159,7 @@ public class PathfinderTestDriver {
         output.println("path from " + start + " to " + end + ":");
         assert path != null;
         for (Path<node<String>>.Segment edge : path){
-            output.println(edge.getStart() + " to " + edge.getEnd() + " with weight " + String.format("%.3f", edge.getCost()));
+            output.println(edge.getStart().getName() + " to " + edge.getEnd().getName() + " with weight " + String.format("%.3f", edge.getCost()));
             totalCost += edge.getCost();
         }
         output.println("total cost: " + String.format("%.3f", totalCost));
@@ -222,11 +222,16 @@ public class PathfinderTestDriver {
 
         Graph<String, Double> graph = graphs.get(graphName);
         ArrayList<node<String>> nodes = graph.listNodes();
-        String ret = "";
-        for (node<String> n: nodes) {
-            ret = ret + n.getName() + " ";
+        if (!nodes.isEmpty()){
+            String ret = nodes.get(0).getName();
+            nodes.remove(0);
+            for (node<String> n: nodes) {
+                ret = ret + " " + n.getName();
+            }
+            output.println(graphName + " contains: " + ret);
+        } else {
+            output.println(graphName + " contains:");
         }
-        output.println("Graph contains: " + ret);
     }
 
     private void listChildren(List<String> arguments) {
@@ -243,13 +248,22 @@ public class PathfinderTestDriver {
         // TODO Insert your code here.
 
         Graph<String, Double> graph = graphs.get(graphName);
-        String ret = "";
+        StringBuilder toprint = new StringBuilder();
         node<String> node = new node<>(parentName);
-        HashMap<Graph.node<String>, ArrayList<edge<String, Double>>> children = graph.listChildren(node);
+        List<String> nodeNames = new ArrayList<>();
+        HashMap<node<String>, ArrayList<edge<String, Double>>> children = graph.listChildren(node);
         for (node<String> n: children.keySet()) {
-            ret = ret + n.getName() + " ";
+            for (Graph.edge<String, Double> edge : children.get(n)){
+                nodeNames.add(edge.getEnd().getName() + "(" + edge.getLabel() + ")");
+            }
         }
-        output.println("the children of " + parentName + " in " + graphName + " are: " + ret);
+        if(nodeNames.size() > 0){
+            java.util.Collections.sort(nodeNames);
+            for (String nodeName : nodeNames) {
+                toprint.append(" ").append(nodeName);
+            }
+        }
+        output.println("the children of " + parentName + " in " + graphName + " are:" + toprint);
     }
 
     /**

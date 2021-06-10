@@ -141,7 +141,7 @@ public class MarvelTestDriver {
         Graph<String, String> graph = new Graph<>();
 
         graphs.put(graphName, graph);
-        output.println("created the graph " + graphName);
+        output.println("created graph " + graphName);
     }
 
     private void BFS(List<String> arguments) {
@@ -151,18 +151,38 @@ public class MarvelTestDriver {
 
         Graph<String, String> graph = graphs.get(arguments.get(0));
         String start = arguments.get(1);
-        String end = arguments.get(0);
+        String end = arguments.get(2);
         BFS(graph, start, end);
     }
 
     private void BFS(Graph<String, String> graph, String start, String end) {
-        ArrayList<Graph.edge<String, String>> path = MarvelPaths.BFS(graph, start, end);
-
-        output.println("path from " + start + " to " + end + ":");
-        assert path != null;
-        for (Graph.edge<String, String> edge : path){
-            output.println(edge.getStart() + " to " + edge.getEnd() + " via " + edge.getLabel());
+        Graph.node<String> startNode = new node<>(start);
+        Graph.node<String> endNode = new node<>(end);
+        if (!graph.listNodes().contains(startNode)) {
+            output.println("unknown: " + start);
         }
+        if (!graph.listNodes().contains(endNode)) {
+            output.println("unknown: " + end);
+        }
+        if (graph.listNodes().contains(endNode) && graph.listNodes().contains(startNode)){
+            ArrayList<Graph.edge<String, String>> path = MarvelPaths.BFS(graph, start, end);
+            StringBuilder toPrint = new StringBuilder("path from " + start + " to " + end + ":");
+            if (path != null) {
+                for (edge<String, String> curr : path) {
+                    toPrint.append("\n").append(curr.getStart().getName()).append(" to ").append(curr.getEnd().getName()).append(" via ").append(curr.getLabel());
+                }
+                output.println(toPrint);
+            } else {
+                output.println(toPrint + "\nno path found");
+            }
+        }
+//        output.println("path from " + start + " to " + end + ":");
+//        if (path != null){
+//            for (Graph.edge<String, String> edge : path){
+//                output.println(edge.getStart() + " to " + edge.getEnd() + " via " + edge.getLabel());
+//            }
+//        }
+
     }
 
     private void buildGraph(List<String> arguments) throws Exception {
@@ -238,11 +258,17 @@ public class MarvelTestDriver {
 
         Graph<String, String> graph = graphs.get(graphName);
         ArrayList<node<String>> nodes = graph.listNodes();
-        String ret = "";
-        for (node<String> n: nodes) {
-            ret = ret + n.getName() + " ";
+        if (!nodes.isEmpty()){
+            String ret = nodes.get(0).getName();
+            nodes.remove(0);
+            for (node<String> n: nodes) {
+                ret = ret + " " + n.getName();
+            }
+            output.println(graphName + " contains: " + ret);
+        } else {
+            output.println(graphName + " contains:");
         }
-        output.println("Graph contains: " + ret);
+
     }
 
     private void listChildren(List<String> arguments) {
@@ -259,13 +285,22 @@ public class MarvelTestDriver {
         // TODO Insert your code here.
 
         Graph<String, String> graph = graphs.get(graphName);
-        String ret = "";
+        StringBuilder toprint = new StringBuilder();
         node<String> node = new node<>(parentName);
+        List<String> nodeNames = new ArrayList<>();
         HashMap<node<String>, ArrayList<edge<String, String>>> children = graph.listChildren(node);
         for (node<String> n: children.keySet()) {
-            ret = ret + n.getName() + " ";
+            for (Graph.edge<String, String> edge : children.get(n)){
+                nodeNames.add(edge.getEnd().getName() + "(" + edge.getLabel() + ")");
+            }
         }
-        output.println("the children of " + parentName + " in " + graphName + " are: " + ret);
+        if(nodeNames.size() > 0){
+            java.util.Collections.sort(nodeNames);
+            for (String nodeName : nodeNames) {
+                toprint.append(" ").append(nodeName);
+            }
+        }
+        output.println("the children of " + parentName + " in " + graphName + " are:" + toprint);
     }
 
     /**

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MarvelParserTest {
-    @Test(expected = IOException.class)
+    @Test(expected = java.lang.IllegalArgumentException.class)
     public void createMarvelGraphTest() throws IOException {
         try {
             MarvelParser.parseData("test", new ArrayList<>(), new HashMap<>());

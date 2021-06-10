@@ -123,7 +123,7 @@ public class GraphTestDriver {
         Graph<String, String> graph = new Graph<>();
 
         graphs.put(graphName, graph);
-        output.println("created the graph " + graphName);
+        output.println("created graph " + graphName);
     }
 
     private void addNode(List<String> arguments) {
@@ -182,11 +182,17 @@ public class GraphTestDriver {
 
         Graph<String, String> graph = graphs.get(graphName);
         ArrayList<node<String>> nodes = graph.listNodes();
-        String ret = "";
-        for (node<String> n: nodes) {
-            ret = ret + n.getName() + " ";
+        if (!nodes.isEmpty()){
+            String ret = nodes.get(0).getName();
+            nodes.remove(0);
+            for (node<String> n: nodes) {
+                ret = ret + " " + n.getName();
+            }
+            output.println(graphName + " contains: " + ret);
+        } else {
+            output.println(graphName + " contains:");
         }
-        output.println("Graph contains: " + ret);
+
     }
 
     private void listChildren(List<String> arguments) {
@@ -203,13 +209,22 @@ public class GraphTestDriver {
         // TODO Insert your code here.
 
         Graph<String, String> graph = graphs.get(graphName);
-        String ret = "";
+        StringBuilder toprint = new StringBuilder();
         node<String> node = new node<>(parentName);
+        List<String> nodeNames = new ArrayList<>();
         HashMap<node<String>, ArrayList<edge<String, String>>> children = graph.listChildren(node);
         for (node<String> n: children.keySet()) {
-            ret = ret + n.getName() + " ";
+            for (Graph.edge<String, String> edge : children.get(n)){
+                nodeNames.add(edge.getEnd().getName() + "(" + edge.getLabel() + ")");
+            }
         }
-        output.println("the children of " + parentName + " in " + graphName + " are: " + ret);
+        if(nodeNames.size() > 0){
+            java.util.Collections.sort(nodeNames);
+            for (String nodeName : nodeNames) {
+                toprint.append(" ").append(nodeName);
+            }
+        }
+        output.println("the children of " + parentName + " in " + graphName + " are:" + toprint);
     }
 
     /**

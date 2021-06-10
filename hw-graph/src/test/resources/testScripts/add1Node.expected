@@ -1,7 +1,7 @@
 # Tests that 1 node can be added
 
 # Create a graph
-Created graph graph1
+created graph graph1
 
 # Add a pair of nodes
 added node n1 to graph1
